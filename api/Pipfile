@@ -8,6 +8,7 @@ flask = "*"
 python-dotenv = "*"
 gunicorn = "*"
 docker = "*"
+flask-cors = "*"
 
 [dev-packages]
 

@@ -15,8 +15,8 @@ RUN pip install pipenv
 RUN apt-get update && apt-get install -y --no-install-recommends gcc
 
 # Install python dependencies in /.venv
-COPY Pipfile .
-COPY Pipfile.lock .
+COPY api/Pipfile .
+COPY api/Pipfile.lock .
 RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --deploy
 
 #=======================================================================================================================
@@ -26,7 +26,7 @@ WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json ./
 COPY package-lock.json ./
-RUN npm ci --silent
+RUN npm i --silent
 RUN npm install react-scripts@3.4.1 -g --silent
 COPY . ./
 RUN npm run build
@@ -35,10 +35,12 @@ RUN npm run build
 
 FROM base AS runtime
 
-RUN apt-get install -y --no-install-recommends nginx
+RUN apt update && apt-get install -y --no-install-recommends nginx
 
 RUN rm /etc/nginx/sites-enabled/default
-COPY nginx.conf /etc/nginx/
+COPY CFE.conf /etc/nginx/conf.d
+COPY --from=ui-build /app/build /var/www/html/
+
 
 # Copy virtual env from python-deps stage
 COPY --from=python-deps /.venv /.venv
@@ -49,11 +51,12 @@ WORKDIR /api
 
 
 # Install application into container
-COPY . .
-
+COPY api/ .
+COPY start_all.sh .
+RUN chmod +x start_all.sh
+EXPOSE 8080
 EXPOSE 8000
 # Run the application
-ENTRYPOINT ["gunicorn", "api:app"]
-CMD ["-w", "2", "-b", "0.0.0.0:8000"]
+CMD ./start_all.sh
 
 #=======================================================================================================================
