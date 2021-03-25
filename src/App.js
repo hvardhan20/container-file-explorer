@@ -1,7 +1,16 @@
 import logo from './logo.svg';
 import './App.css';
+import React, { useState, useEffect } from 'react';
 
 function App() {
+  const [currentTime, setCurrentTime] = useState([]);
+
+  useEffect(() => {
+    fetch('/index',).then(res => res.json()).then(data => {
+      console.log(data);
+      setCurrentTime(data.images);
+    });
+  }, []);
   return (
     <div className="App">
       <header className="App-header">
@@ -17,6 +26,7 @@ function App() {
         >
           Learn React
         </a>
+        <p>The current time is {currentTime}.</p>
       </header>
     </div>
   );
