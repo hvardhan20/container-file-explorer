@@ -2,7 +2,7 @@ import time
 from flask import Flask, jsonify, request, redirect, url_for
 from flask_cors import CORS
 from docker_utils import docker_client as docker
-import asyncio
+
 
 app = Flask(__name__)
 CORS(app)
