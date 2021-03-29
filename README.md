@@ -1,3 +1,12 @@
+# Running container file explorer
+
+`docker run -d
+--name CFE
+-p 8080:8080 -p 8000:8000 
+-e REACT_APP_FLASK_PORT=8000
+-v /var/run/docker.sock:/var/run/docker.sock
+hvardhan20/cfe_image`
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
