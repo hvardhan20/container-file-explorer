@@ -50,11 +50,13 @@ class DockerUtils:
             containers = self.client.containers.list(**kwargs)
         for container in containers:
             res.append({
-                'attrs': container.attrs,
-                'id': container.short_id,
-                'labels': container.labels,
-                'image': container.image.short_id,
-                'status': container.status
+                # 'attrs': container.attrs,
+                'Name': container.name,
+                # 'key': container.name,
+                'ID': container.short_id,
+                # 'labels': container.labels,
+                'Image ID': container.image.short_id,
+                'Status': container.status
             })
         return res
 
@@ -78,9 +80,10 @@ class DockerUtils:
         for image in images:
             res.append({
                 # 'attrs': image.attrs,
-                'id': image.short_id,
-                'labels': str(image.labels),
-                'tags': image.tags
+                'ID': image.short_id,
+                # 'key': image.short_id,
+                # 'labels': str(image.labels),
+                'Tags': image.tags[0] if image.tags else "None"
             })
         return res
 

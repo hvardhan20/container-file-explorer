@@ -31,7 +31,7 @@ def images():
 def containers(container_id=None):
     args = request.args
     res = docker.get_containers(container_id=container_id, **args)
-    return jsonify({'data': res})
+    return jsonify({'data': res}), 200
 
 
 @app.route('/containers/<container_id>/files', methods=['GET'])

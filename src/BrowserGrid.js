@@ -1,27 +1,57 @@
-import './FileBrowserGrid.css';
-import FileDetail from "./FileDetail";
+import React from 'react';
+import './BrowserGrid.css';
+// import FileBrowser from "./browser";
 
-const elements = ['File1', 'File2', 'File3', 'File1', 'File2', 'File3'];
 
-const items = []
+class BrowserGrid extends React.Component {
 
-for (const [index, value] of elements.entries()) {
-    items.push(<li className="ui segment">{value}</li>)
+    render() {
+        const renderedHeader = this.props.headers ? this.props.headers.map((item, idx) => <th key={idx}>{item}</th>) : [];
+        const items = this.props.items ? this.props.items : [];
+        let renderedBody = [];
+
+        if (this.props.onRowClick) {
+            renderedBody = items.map((item, j) => {
+                return (
+                    <tr key={item.ID} id={item.ID} onClick={() => this.props.onRowClick(item.ID)}>
+                        {Object.values(item).map((v, idx) => {
+                            return <td key={idx}>{v}</td>
+                        })}
+                    </tr>
+                )
+            });
+        }
+        else {
+            renderedBody = items.map((item, j) => {
+                return (
+                    <tr key={item.ID}>
+                        {Object.values(item).map((v, idx) => {
+                            return <td key={idx}>{v}</td>
+                        })}
+                    </tr>
+                )
+            });
+        }
+
+        return (
+            <div className="browser-grid">
+                <table className="ui selectable inverted table" style={{textAlign: 'center'}}>
+                    <thead>
+                    <tr>
+                        {renderedHeader}
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {renderedBody}
+                    </tbody>
+                </table>
+            </div>
+        );
+    }
 }
 
-function FileBrowserGrid() {
 
-    return (
-        <div>
-            <ul className="file-list ui segments">
-                {items}
-            </ul>
-
-        </div>
-    );
-}
-
-export default FileBrowserGrid;
+export default BrowserGrid;
 
 // <div className="ui list">
 //     <div className="item">
