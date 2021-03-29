@@ -2,6 +2,7 @@ import time
 from flask import Flask, jsonify, request, redirect, url_for
 from flask_cors import CORS
 from docker_utils import docker_client as docker
+import os
 
 
 app = Flask(__name__)
@@ -11,6 +12,11 @@ CORS(app)
 @app.route('/time', methods=['GET'])
 def get_current_time():
     return jsonify({'time': time.time()})
+
+
+@app.route('/', methods=['GET'])
+def default():
+    return redirect(url_for('images', **request.args))
 
 
 @app.route('/index', methods=['GET'])
@@ -42,5 +48,5 @@ def files(container_id):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=os.environ.get('REACT_APP_FLASK_PORT'))
 # gunicorn -w 1 -b 0.0.0.0:8000 wsgi:server

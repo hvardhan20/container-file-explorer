@@ -4,6 +4,10 @@ import io
 import asyncio
 
 
+def get_image_id(image):
+    return image.short_id.split(':')[1]
+
+
 def generator_to_stream(generator, buffer_size=io.DEFAULT_BUFFER_SIZE):
     class GeneratorStream(io.RawIOBase):
         def __init__(self):
@@ -44,10 +48,14 @@ class DockerUtils:
 
     def get_containers(self, container_id=None, **kwargs):
         res = []
+        image_id = kwargs.pop('image_id', None)
+
         if container_id:
             containers = [self.client.containers.get(container_id=container_id, **kwargs)]
         else:
             containers = self.client.containers.list(**kwargs)
+        if image_id:
+            containers = list(filter(lambda c: get_image_id(c.image) == image_id, containers))
         for container in containers:
             res.append({
                 # 'attrs': container.attrs,
@@ -55,9 +63,10 @@ class DockerUtils:
                 # 'key': container.name,
                 'ID': container.short_id,
                 # 'labels': container.labels,
-                'Image ID': container.image.short_id,
+                'Image ID': get_image_id(container.image),
                 'Status': container.status
             })
+
         return res
 
     def get_archive(self, container_id=None, container=None, path=None):
@@ -80,7 +89,7 @@ class DockerUtils:
         for image in images:
             res.append({
                 # 'attrs': image.attrs,
-                'ID': image.short_id,
+                'ID': get_image_id(image),
                 # 'key': image.short_id,
                 # 'labels': str(image.labels),
                 'Tags': image.tags[0] if image.tags else "None"

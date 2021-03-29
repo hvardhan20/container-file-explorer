@@ -1,6 +1,5 @@
 import React from 'react';
 import './BrowserGrid.css';
-// import FileBrowser from "./browser";
 
 
 class BrowserGrid extends React.Component {

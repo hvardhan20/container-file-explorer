@@ -1,52 +1,28 @@
 import React from 'react';
 import BrowserGrid from "./BrowserGrid";
-import axiosInstance from './config/axios';
 import FileBrowser from "./browser";
-
-
-
 
 
 class ContainerBrowser extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {items: [], headers: [], files: []};
-
-        this.rowClickHandler = this.rowClickHandler.bind(this);
-    }
-
-    async getContainers() {
-        const res = await axiosInstance.get("/containers", {
-            params: { all: true},
-            headers: {
-            }
-        });
-        return res.data;
-    }
-    async componentDidMount() {
-        const containers = await this.getContainers()
-        const headers = Object.keys(containers.data[0]);
-        this.setState({items: containers.data, headers});
-    }
-
-    async rowClickHandler(id) {
-        console.log("INFO IS **********@@@@@@@", id)
-        const res = await axiosInstance.get(`/containers/${id}/files`, {
-            params: {},
-            headers: {
-            }
-        });
-        console.log("FILES IS ********$$$$$$$$$$", res.data);
-        this.setState({files: res.data.data});
-
-
+        this.state = {files: []};
     }
 
     render() {
         return (
-            <div style={{overflow: 'scroll'}}>
-                <BrowserGrid items={this.state.items} headers={this.state.headers} onRowClick={this.rowClickHandler}/>
-                <FileBrowser files={this.state.files}/>
+            <div className="container-browser" style={{ display:'grid', 'grid-template-columns': 'repeat(2, 1fr)',
+                'grid-auto-rows': 'minmax(100px, auto)', gap: '10px'}}>
+                <div style={{'grid-column': '1', 'grid-row': '1'}}>
+                <h1>Containers</h1>
+                    <div style={{overflow: 'scroll'}}>
+                        <BrowserGrid items={this.props.items} headers={this.props.headers} onRowClick={this.props.onRowClick}/>
+                    </div>
+                </div>
+                <div style={{'grid-column': '2', 'grid-row': '1'}}>
+                    <h1>Files</h1>
+                    <FileBrowser files={this.props.files}/>
+                </div>
             </div>
         );
     }
