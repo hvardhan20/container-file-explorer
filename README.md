@@ -1,3 +1,6 @@
+# Container File Explorer
+CFE is a docker app you can use to visually explore the resources in your local docker engine. Resources like images, container, and files inside each container.
+
 # Running container file explorer
 
 `docker run -d
